@@ -52,17 +52,17 @@ void initState() {
     List<String> parts = widget.extractedText.split(',');
     
     if (parts.length >= 3) {
-      selectedTypeItem = 'Expense'; 
-      explainC.text = parts[1].trim();   
-      amountC.text = parts[2].trim();    
+      selectedTypeItem = 'Expense'; // Assuming type is 'Expense'
+      explainC.text = parts[1].trim();   // Assuming notes is the second part
+      amountC.text = parts[2].trim();    // Assuming amount is the third part
       
-
+      // Find the corresponding category item based on parts[0].trim()
       selectedCategoryItem = categories.firstWhere(
         (category) => category.title == parts[0].trim(),
-        orElse: () => categories.first,
+        orElse: () => categories.first, // Default to the first category if no match
       );
     } else {
-      selectedTypeItem = 'Others'; 
+     // Default to 'Expense' if no type is found
     }
   });
 }
@@ -491,7 +491,7 @@ void initState() {
                       );
                     },
                     child: const Icon(
-                      Icons.camera,
+                       IconData(0xe4b6, fontFamily: 'MaterialIcons'),
                       color: Colors.white,
                     ),
                   )
