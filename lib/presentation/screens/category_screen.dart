@@ -1,10 +1,10 @@
-import 'package:expanse_management/Constants/color.dart';
-import 'package:expanse_management/Constants/default_categories.dart';
-import 'package:expanse_management/data/utilty.dart';
+import 'package:billbitzfinal/Constants/color.dart';
+import 'package:billbitzfinal/Constants/default_categories.dart';
+import 'package:billbitzfinal/data/utilty.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:expanse_management/domain/models/category_model.dart';
-import 'package:expanse_management/domain/models/transaction_model.dart';
+import 'package:billbitzfinal/domain/models/category_model.dart';
+import 'package:billbitzfinal/domain/models/transaction_model.dart';
 
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({Key? key}) : super(key: key);

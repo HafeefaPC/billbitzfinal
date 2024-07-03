@@ -1,4 +1,4 @@
-import 'package:expanse_management/Constants/color.dart';
+import 'package:billbitzfinal/Constants/color.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 // ignore: depend_on_referenced_packages

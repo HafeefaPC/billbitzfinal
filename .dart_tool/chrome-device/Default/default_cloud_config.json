@@ -206,14 +206,14 @@
       "appId": "a3f5b7c9d1e2f4a6b8c7d9e1f2a3b4d6",
       "appName": "topsites",
       "data": {
-         "latestOperationVersion": "2.2",
-         "latestOperationVersionForTesting": "2.2",
+         "latestOperationVersion": "2.3",
+         "latestOperationVersionForTesting": "2.3",
          "topSitesV2Enabled": false
       },
       "effectStrategy": "launch",
       "instanceId": "3e7a9c4b1f8d6e5c2a9b7e4d1c8f3e7b",
       "type": "normal",
-      "version": "1007"
+      "version": "1009"
    }, {
       "appId": "71146be72c1663fbeca572989b494b56",
       "appName": "shared_links",
@@ -300,5 +300,5 @@
       "type": "normal",
       "version": "1003"
    } ],
-   "version": "202406240001"
+   "version": "202407030001"
 }

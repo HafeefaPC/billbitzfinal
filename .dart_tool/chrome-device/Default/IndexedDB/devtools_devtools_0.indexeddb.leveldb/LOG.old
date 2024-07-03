@@ -1,2 +1,3 @@
-2024/07/01-21:55:23.713 4e28 Creating DB C:\Users\hafee\AppData\Local\Temp\flutter_tools.ab0e54b0\flutter_tools_chrome_device.4dcce9ea\Default\IndexedDB\devtools_devtools_0.indexeddb.leveldb since it was missing.
-2024/07/01-21:55:23.717 4e28 Reusing MANIFEST C:\Users\hafee\AppData\Local\Temp\flutter_tools.ab0e54b0\flutter_tools_chrome_device.4dcce9ea\Default\IndexedDB\devtools_devtools_0.indexeddb.leveldb/MANIFEST-000001
+2024/07/04-00:57:20.372 370c Reusing MANIFEST C:\Users\hafee\AppData\Local\Temp\flutter_tools.b10c1606\flutter_tools_chrome_device.759ab2f7\Default\IndexedDB\devtools_devtools_0.indexeddb.leveldb/MANIFEST-000001
+2024/07/04-00:57:20.374 370c Recovering log #3
+2024/07/04-00:57:20.375 370c Reusing old log C:\Users\hafee\AppData\Local\Temp\flutter_tools.b10c1606\flutter_tools_chrome_device.759ab2f7\Default\IndexedDB\devtools_devtools_0.indexeddb.leveldb/000003.log 

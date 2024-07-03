@@ -1,9 +1,10 @@
-import 'package:expanse_management/presentation/screens/add_transaction.dart';
-import 'package:expanse_management/presentation/screens/category_screen.dart';
-import 'package:expanse_management/presentation/screens/home.dart';
-import 'package:expanse_management/presentation/screens/search_screen.dart';
-import 'package:expanse_management/presentation/screens/statistic.dart';
+import 'package:billbitzfinal/presentation/screens/add_transaction.dart';
+import 'package:billbitzfinal/presentation/screens/category_screen.dart';
+import 'package:billbitzfinal/presentation/screens/home.dart';
+import 'package:billbitzfinal/presentation/screens/search_screen.dart';
+import 'package:billbitzfinal/presentation/screens/statistic.dart';
 import 'package:flutter/material.dart';
+import 'package:billbitzfinal/presentation/screens/camera.dart';
 
 class Bottom extends StatefulWidget {
   const Bottom({super.key});
@@ -19,7 +20,8 @@ class _BottomState extends State<Bottom> {
     const Home(),
     const Statistics(),
     const CategoryScreen(),
-    const SearchScreen()
+    const SearchScreen(),
+   
   ];
 
   @override

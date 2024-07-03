@@ -3,9 +3,9 @@
    "roots": {
       "bookmark_bar": {
          "children": [ {
-            "date_added": "13364324711997563",
+            "date_added": "13364507107036805",
             "date_last_used": "0",
-            "guid": "08c7ff74-e665-4738-b51e-76ade6bafbf2",
+            "guid": "4a423439-bfb5-4ca2-b229-c70e623d81b1",
             "id": "8",
             "name": "Agoda",
             "show_icon": false,
@@ -13,9 +13,9 @@
             "type": "url",
             "url": "https://s3.amazonaws.com/amundsen/redirect/19q2/agoda.html?utm_source=win32&utm_medium=favorite"
          }, {
-            "date_added": "13364324711990586",
+            "date_added": "13364507107031639",
             "date_last_used": "0",
-            "guid": "867ebf96-968c-4689-a8f2-e90c37ed5880",
+            "guid": "da7360df-897b-40d6-83bd-c40dd0e741bb",
             "id": "7",
             "name": "Amazon",
             "show_icon": false,
@@ -26,7 +26,7 @@
             "children": [ {
                "date_added": "13308672502759553",
                "date_last_used": "0",
-               "guid": "15edb832-5e93-414d-8a8c-544988e8d723",
+               "guid": "7bf26329-b9cd-48db-9daa-6bfab027721d",
                "id": "10",
                "name": "Acer",
                "show_icon": false,
@@ -34,16 +34,16 @@
                "type": "url",
                "url": "http://www.acer.com/"
             } ],
-            "date_added": "13364324720654441",
+            "date_added": "13364507118593916",
             "date_last_used": "0",
             "date_modified": "0",
-            "guid": "af8e52cf-5fc7-4476-8040-dfbf86a5e8a1",
+            "guid": "3b62f042-7acd-4679-b3fe-1b32459b2489",
             "id": "9",
             "name": "Acer",
             "source": "import_fre",
             "type": "folder"
          } ],
-         "date_added": "13364324711136578",
+         "date_added": "13364507106110083",
          "date_last_used": "0",
          "date_modified": "0",
          "guid": "0bc5d13f-2cba-5d74-951f-3f233fe6c908",
@@ -54,7 +54,7 @@
       },
       "other": {
          "children": [  ],
-         "date_added": "13364324711136580",
+         "date_added": "13364507106110091",
          "date_last_used": "0",
          "date_modified": "0",
          "guid": "82b081ec-3dd3-529c-8475-ab6c344590dd",
@@ -65,7 +65,7 @@
       },
       "synced": {
          "children": [  ],
-         "date_added": "13364324711136582",
+         "date_added": "13364507106110093",
          "date_last_used": "0",
          "date_modified": "0",
          "guid": "4cf2e351-0e85-532b-bb37-df045d8f8d0f",

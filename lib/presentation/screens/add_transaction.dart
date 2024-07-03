@@ -1,13 +1,15 @@
-import 'package:expanse_management/Constants/color.dart';
-import 'package:expanse_management/Constants/default_categories.dart';
-import 'package:expanse_management/Constants/limits.dart';
-import 'package:expanse_management/data/utilty.dart';
-import 'package:expanse_management/domain/models/category_model.dart';
-import 'package:expanse_management/domain/models/transaction_model.dart';
+import 'package:billbitzfinal/Constants/color.dart';
+import 'package:billbitzfinal/Constants/default_categories.dart';
+import 'package:billbitzfinal/Constants/limits.dart';
+import 'package:billbitzfinal/data/utilty.dart';
+import 'package:billbitzfinal/domain/models/category_model.dart';
+import 'package:billbitzfinal/domain/models/transaction_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'camera.dart';
 
 // import '../Constants/categories.dart';
+
 
 class AddScreen extends StatefulWidget {
   const AddScreen({super.key});
@@ -309,7 +311,7 @@ class _AddScreenState extends State<AddScreen> {
                       child: Row(children: [
                         SizedBox(
                           width: 40,
-                          child: Image.asset('images/$e.png'),
+                          child: Image.asset('Images/$e.png'),
                         ),
                         const SizedBox(
                           width: 10,
@@ -482,10 +484,18 @@ class _AddScreenState extends State<AddScreen> {
                         fontWeight: FontWeight.bold,
                         color: Colors.white),
                   ),
-                  const Icon(
-                    Icons.attach_file_outlined,
+                   GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) =>  CameraScreen()),
+                    );
+                  },
+                  child: const Icon(
+                    Icons.camera,
                     color: Colors.white,
-                  )
+                  ),
+                   )
                 ],
               ),
             )

@@ -1,6 +1,6 @@
-import 'package:expanse_management/presentation/widgets/bottom_navbar.dart';
-import 'package:expanse_management/domain/models/category_model.dart';
-import 'package:expanse_management/domain/models/transaction_model.dart';
+import 'package:billbitzfinal/presentation/widgets/bottom_navbar.dart';
+import 'package:billbitzfinal/domain/models/category_model.dart';
+import 'package:billbitzfinal/domain/models/transaction_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 

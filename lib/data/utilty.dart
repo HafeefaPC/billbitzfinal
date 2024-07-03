@@ -1,4 +1,4 @@
-import 'package:expanse_management/domain/models/transaction_model.dart';
+import 'package:billbitzfinal/domain/models/transaction_model.dart';
 import 'package:hive/hive.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';

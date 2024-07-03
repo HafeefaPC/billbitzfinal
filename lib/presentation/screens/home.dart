@@ -1,6 +1,6 @@
-import 'package:expanse_management/Constants/days.dart';
-import 'package:expanse_management/data/utilty.dart';
-import 'package:expanse_management/domain/models/transaction_model.dart';
+import 'package:billbitzfinal/Constants/days.dart';
+import 'package:billbitzfinal/data/utilty.dart';
+import 'package:billbitzfinal/domain/models/transaction_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 

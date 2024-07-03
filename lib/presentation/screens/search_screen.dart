@@ -1,8 +1,8 @@
-import 'package:expanse_management/Constants/color.dart';
-import 'package:expanse_management/data/utilty.dart';
+import 'package:billbitzfinal/Constants/color.dart';
+import 'package:billbitzfinal/data/utilty.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:expanse_management/domain/models/transaction_model.dart';
+import 'package:billbitzfinal/domain/models/transaction_model.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
