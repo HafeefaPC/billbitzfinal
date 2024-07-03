@@ -30,7 +30,7 @@ class _BottomState extends State<Bottom> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => const AddScreen()));
+              .push(MaterialPageRoute(builder: (context) => const AddScreen(extractedText: '',)));
         },
         backgroundColor: const Color(0xFF0D47A1) ,
         child: const Icon(Icons.add),

@@ -123,6 +123,7 @@ class PieChart2State extends State {
                     SizedBox(
                       height: 4,
                     ),
+                    
                     Indicator(
                       color: AppColors.contentColorGreen,
                       text: 'Education',

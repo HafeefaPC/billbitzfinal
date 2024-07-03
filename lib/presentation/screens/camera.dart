@@ -2,8 +2,10 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
+
+import 'add_transaction.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({Key? key}) : super(key: key);
@@ -47,7 +49,7 @@ class _CameraScreenState extends State<CameraScreen> {
     super.dispose();
   }
 
-  Future<void> _captureAndProcessImage() async {
+  Future<void> _captureAndProcessImage(BuildContext context) async {
     try {
       await _initializeControllerFuture;
       final image = await _controller.takePicture();
@@ -62,6 +64,15 @@ class _CameraScreenState extends State<CameraScreen> {
 
       String extractedText = await sendToGeminiAPI(imageBytes);
       print('Extracted Text: $extractedText');
+
+      // Navigate to AddScreen and pass the extracted text
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => AddScreen(
+            extractedText: extractedText,
+          ),
+        ),
+      );
     } catch (e) {
       print('Error capturing or processing image: $e');
     }
@@ -71,7 +82,7 @@ class _CameraScreenState extends State<CameraScreen> {
     final model = GenerativeModel(model: 'gemini-pro-vision', apiKey: apiKey);
 
     final prompt = TextPart(
-      "Extract the category of expense like food, entertainment etc., a one-word note for the expense, and the total amount of expense. For example: food, dinner, 100."
+      "Extract the category of expense from these food,Transportation,Education,Bills,Travels,Pets,Others Expense,Tax and  a one-word that describtion for the expense, and the total amount of expense. For example output should be coma separated like  food, dinner, 100."
     );
 
     final imagePart = DataPart('image/jpeg', imageBytes);
@@ -102,7 +113,7 @@ class _CameraScreenState extends State<CameraScreen> {
       body: CameraPreview(_controller),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.camera),
-        onPressed: _captureAndProcessImage,
+        onPressed: () => _captureAndProcessImage(context),
       ),
     );
   }

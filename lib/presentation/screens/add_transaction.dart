@@ -1,18 +1,16 @@
-import 'package:billbitzfinal/Constants/color.dart';
-import 'package:billbitzfinal/Constants/default_categories.dart';
-import 'package:billbitzfinal/Constants/limits.dart';
+import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:billbitzfinal/data/utilty.dart';
 import 'package:billbitzfinal/domain/models/category_model.dart';
 import 'package:billbitzfinal/domain/models/transaction_model.dart';
-import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'camera.dart';
-
-// import '../Constants/categories.dart';
-
+import 'package:billbitzfinal/Constants/default_categories.dart';
+import 'package:billbitzfinal/Constants/limits.dart';
+import 'camera.dart'; // Update the import if the location of your CameraScreen has changed
 
 class AddScreen extends StatefulWidget {
-  const AddScreen({super.key});
+  final String extractedText; // Parameter to receive extracted text
+
+  const AddScreen({Key? key, required this.extractedText}) : super(key: key);
 
   @override
   State<AddScreen> createState() => _AddScreenState();
@@ -38,20 +36,37 @@ class _AddScreenState extends State<AddScreen> {
 
   bool isAmountValid = true;
 
-  @override
-  void initState() {
-    super.initState();
-    explainFocus.addListener(() {
-      setState(() {});
-    });
-    amountFocus.addListener(() {
-      setState(() {});
-    });
+@override
+void initState() {
+  super.initState();
+  explainFocus.addListener(() {
+    setState(() {});
+  });
+  amountFocus.addListener(() {
+    setState(() {});
+  });
 
-    openBox().then((_) {
-      fetchCategories();
-    });
-  }
+  openBox().then((_) {
+    fetchCategories();
+
+    List<String> parts = widget.extractedText.split(',');
+    
+    if (parts.length >= 3) {
+      selectedTypeItem = 'Expense'; 
+      explainC.text = parts[1].trim();   
+      amountC.text = parts[2].trim();    
+      
+
+      selectedCategoryItem = categories.firstWhere(
+        (category) => category.title == parts[0].trim(),
+        orElse: () => categories.first,
+      );
+    } else {
+      selectedTypeItem = 'Others'; 
+    }
+  });
+}
+
 
   Future<void> openBox() async {
     box = await Hive.openBox<CategoryModel>('categories');
@@ -76,16 +91,17 @@ class _AddScreenState extends State<AddScreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       body: SafeArea(
-          child: Stack(
-        alignment: AlignmentDirectional.center,
-        children: [
-          backgroundAddContainer(context),
-          Positioned(
-            top: 120,
-            child: mainAddContainer(),
-          )
-        ],
-      )),
+        child: Stack(
+          alignment: AlignmentDirectional.center,
+          children: [
+            backgroundAddContainer(context),
+            Positioned(
+              top: 120,
+              child: mainAddContainer(),
+            )
+          ],
+        ),
+      ),
     );
   }
 
@@ -96,34 +112,19 @@ class _AddScreenState extends State<AddScreen> {
       height: 680,
       width: 360,
       child: Column(children: [
-        const SizedBox(
-          height: 35,
-        ),
+        const SizedBox(height: 35),
         typeField(),
-        const SizedBox(
-          height: 35,
-        ),
+        const SizedBox(height: 35),
         noteField(),
-        const SizedBox(
-          height: 35,
-        ),
+        const SizedBox(height: 35),
         amountField(),
-        const SizedBox(
-          height: 35,
-        ),
+        const SizedBox(height: 35),
         categoryField(),
-        const SizedBox(
-          height: 35,
-        ),
+        const SizedBox(height: 35),
         timeField(),
-        // const Spacer(),
-        const SizedBox(
-          height: 35,
-        ),
+        const SizedBox(height: 35),
         addTransaction(),
-        const SizedBox(
-          height: 20,
-        )
+        const SizedBox(height: 20)
       ]),
     );
   }
@@ -136,7 +137,6 @@ class _AddScreenState extends State<AddScreen> {
             selectedTypeItem == null ||
             explainC.text.isEmpty ||
             amountC.text.isEmpty) {
-          // Display an error message or show a snackbar indicating missing fields
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
@@ -175,8 +175,7 @@ class _AddScreenState extends State<AddScreen> {
               ],
             ),
           );
-          isWarningShown =
-              true; // Set the flag to true after showing the warning
+          isWarningShown = true;
           return;
         }
         var newTransaction = Transaction(selectedTypeItem!, amountC.text, date,
@@ -236,10 +235,11 @@ class _AddScreenState extends State<AddScreen> {
         child: TextButton(
           onPressed: () async {
             DateTime? newDate = await showDatePicker(
-                context: context,
-                initialDate: DateTime.now(),
-                firstDate: DateTime(2020, 1, 1),
-                lastDate: DateTime(2030));
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(2020, 1, 1),
+              lastDate: DateTime(2030),
+            );
             if (newDate == null) return;
             setState(() {
               date = newDate;
@@ -256,9 +256,7 @@ class _AddScreenState extends State<AddScreen> {
 
   Padding amountField() {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: TextField(
         keyboardType: TextInputType.number,
         focusNode: amountFocus,
@@ -279,8 +277,7 @@ class _AddScreenState extends State<AddScreen> {
         onChanged: (value) {
           setState(() {
             if (value.isEmpty) {
-              isAmountValid =
-                  true; // Reset the validation if the field is empty
+              isAmountValid = true;
             } else {
               isAmountValid =
                   double.tryParse(value) != null && double.parse(value) > 0;
@@ -295,62 +292,63 @@ class _AddScreenState extends State<AddScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-          width: double.infinity,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                width: 2,
-                color: const Color(0xFF0D47A1),
-              )),
-          child: DropdownButton<String>(
-            value: selectedTypeItem,
-            items: types
-                .map((e) => DropdownMenuItem(
-                      value: e,
-                      child: Row(children: [
-                        SizedBox(
-                          width: 40,
-                          child: Image.asset('Images/$e.png'),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          e,
-                          style: const TextStyle(fontSize: 15),
-                        )
-                      ]),
-                    ))
-                .toList(),
-            selectedItemBuilder: (BuildContext context) => types
-                .map((e) => Row(
-                      children: [
-                        SizedBox(
-                          width: 42,
-                          child: Image.asset('images/$e.png'),
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        Text(e)
-                      ],
-                    ))
-                .toList(),
-            hint: const Text(
-              'Select Type',
-              style: TextStyle(color: Colors.grey),
-            ),
-            dropdownColor: Colors.white,
-            isExpanded: true,
-            underline: Container(),
-            onChanged: ((value) {
-              setState(() {
-                selectedTypeItem = value!;
-                selectedCategoryItem = null;
-              });
-            }),
-          )),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+        width: double.infinity,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              width: 2,
+              color: const Color(0xFF0D47A1),
+            )),
+        child: DropdownButton<String>(
+          value: selectedTypeItem,
+          items: types
+              .map((e) => DropdownMenuItem(
+                    value: e,
+                    child: Row(children: [
+                      SizedBox(
+                        width: 40,
+                        child: Image.asset('images/$e.png'),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        e,
+                        style: const TextStyle(fontSize: 15),
+                      )
+                    ]),
+                  ))
+              .toList(),
+          selectedItemBuilder: (BuildContext context) => types
+              .map((e) => Row(
+                    children: [
+                      SizedBox(
+                        width: 42,
+                        child: Image.asset('images/$e.png'),
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Text(e)
+                    ],
+                  ))
+              .toList(),
+          hint: const Text(
+            'Select Type',
+            style: TextStyle(color: Colors.grey),
+          ),
+          dropdownColor: Colors.white,
+          isExpanded: true,
+          underline: Container(),
+          onChanged: ((value) {
+            setState(() {
+              selectedTypeItem = value!;
+              selectedCategoryItem = null;
+            });
+          }),
+        ),
+      ),
     );
   }
 
@@ -484,18 +482,19 @@ class _AddScreenState extends State<AddScreen> {
                         fontWeight: FontWeight.bold,
                         color: Colors.white),
                   ),
-                   GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) =>  CameraScreen()),
-                    );
-                  },
-                  child: const Icon(
-                    Icons.camera,
-                    color: Colors.white,
-                  ),
-                   )
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => CameraScreen(),
+                        ),
+                      );
+                    },
+                    child: const Icon(
+                      Icons.camera,
+                      color: Colors.white,
+                    ),
+                  )
                 ],
               ),
             )

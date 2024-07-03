@@ -6,7 +6,7 @@ final List<CategoryModel> defaultIncomeCategories = [
   CategoryModel('Investments', 'Investments.png', 'Income'),
   CategoryModel('Rentals', 'Rentals.png', 'Income'),
   CategoryModel('Savings', 'Savings.png', 'Income'),
-  CategoryModel('Others Income', 'Others.png', 'Income'),
+  CategoryModel('Others', 'Others.png', 'Income'),
 ];
 final List<CategoryModel> defaultExpenseCategories = [
   CategoryModel('Food', 'Food.png', 'Expense'),
@@ -16,5 +16,5 @@ final List<CategoryModel> defaultExpenseCategories = [
   CategoryModel('Travels', 'Travels.png', 'Expense'),
   CategoryModel('Pets', 'Pets.png', 'Expense'),
   CategoryModel('Tax', 'Tax.png', 'Expense'),
-  CategoryModel('Others Expense', 'Others.png', 'Income'),
+  CategoryModel('Others', 'Others.png', 'Expense'),
 ];
