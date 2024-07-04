@@ -1,11 +1,15 @@
-import 'package:billbitzfinal/Constants/days.dart';
-import 'package:billbitzfinal/data/utilty.dart';
-import 'package:billbitzfinal/domain/models/transaction_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:billbitzfinal/domain/models/transaction_model.dart';
+import 'package:billbitzfinal/Constants/days.dart';
+import 'package:billbitzfinal/data/utilty.dart';
+import 'dart:convert';
+
+import 'package:webview_flutter/webview_flutter.dart';
+
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  const Home({Key? key}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
@@ -14,9 +18,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   late Transaction transactionHistory;
   final box = Hive.box<Transaction>('transactions');
-  // late int totalIn;
-  // late int totalEx;
-  // late int total;
+
   @override
   void initState() {
     super.initState();
@@ -27,28 +29,36 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: SafeArea(
         child: ValueListenableBuilder(
-            valueListenable: box.listenable(),
-            builder: (context, value, child) {
-              return CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: SizedBox(height: 340, child: _head()),
-                  ),
-                  const SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Transactions History',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 19,
-                              color: Colors.black,
-                            ),
+          valueListenable: box.listenable(),
+          builder: (context, value, child) {
+            return CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: SizedBox(height: 340, child: _head(context)),
+                ),
+                 SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Transactions History',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 19,
+                            color: Colors.black,
                           ),
-                          Text(
+                        ),
+                        TextButton(
+
+                          onPressed: () {
+                           Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ChatBotScreen()),
+                            );
+                          },
+                          child: Text(
                             'See all',
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
@@ -56,51 +66,235 @@ class _HomeState extends State<Home> {
                               color: Colors.grey,
                             ),
                           ),
-                        ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      transactionHistory = box.values.toList()[index];
+                      return listTransaction(transactionHistory, index);
+                    },
+                    childCount: box.length,
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _head(BuildContext context) {
+    return Stack(
+      children: [
+        Column(
+          children: [
+            Container(
+              width: double.infinity,
+              height: 240,
+              decoration: const BoxDecoration(
+                color: Color(0xFF0D47A1),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
+                ),
+              ),
+              child: Stack(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(top: 40, left: 30),
+                    child: Text(
+                      "Dashboard",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 22,
+                        color: Colors.white,
                       ),
                     ),
                   ),
-                  SliverList(
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                    transactionHistory = box.values.toList()[index];
-                    return listTransaction(transactionHistory, index);
-                  }, childCount: box.length)),
                 ],
-              );
-            }),
-      ),
+              ),
+            ),
+          ],
+        ),
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 100),
+            child: Container(
+              height: 180,
+              width: 360,
+              decoration: BoxDecoration(
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color.fromRGBO(47, 125, 121, 0.3),
+                    offset: Offset(0, 6),
+                    blurRadius: 12,
+                    spreadRadius: 6,
+                  ),
+                ],
+                color: const Color(0xFF64B5F6),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Column(
+                children: [
+                  const SizedBox(height: 10),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Total Balance',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Icon(
+                          Icons.more_horiz,
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 7),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15),
+                    child: Row(
+                      children: [
+                        Text(
+                          formatCurrency(totalBalance()),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 25,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 25),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 13,
+                              backgroundColor: Colors.green,
+                              child: Icon(
+                                Icons.arrow_upward,
+                                color: Colors.black,
+                                size: 19,
+                              ),
+                            ),
+                            SizedBox(width: 7),
+                            Text(
+                              'Income',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                color: Color.fromARGB(255, 216, 216, 216),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 13,
+                              backgroundColor: Colors.red,
+                              child: Icon(
+                                Icons.arrow_downward,
+                                color: Colors.black,
+                                size: 19,
+                              ),
+                            ),
+                            SizedBox(width: 7),
+                            Text(
+                              'Expenses',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                color: Color.fromARGB(255, 216, 216, 216),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          formatCurrency(totalIncome()),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 17,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          formatCurrency(totalExpense()),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 17,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        )
+      ],
     );
   }
 
   Widget listTransaction(Transaction transactionHistory, int index) {
     return Dismissible(
-        key: UniqueKey(),
-        confirmDismiss: (direction) async {
-          return await showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text("Confirm"),
-                content: const Text(
-                    "Are you sure you want to delete this transaction?"),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: const Text("Cancel"),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: const Text("Delete"),
-                  ),
-                ],
-              );
-            },
-          );
-        },
-        onDismissed: (direction) {
-          transactionHistory.delete();
-        },
-        child: getTransaction(index, transactionHistory));
+      key: UniqueKey(),
+      confirmDismiss: (direction) async {
+        return await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Confirm"),
+              content: const Text(
+                  "Are you sure you want to delete this transaction?"),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: const Text("Delete"),
+                ),
+              ],
+            );
+          },
+        );
+      },
+      onDismissed: (direction) {
+        transactionHistory.delete();
+      },
+      child: getTransaction(index, transactionHistory),
+    );
   }
 
   ListTile getTransaction(int index, Transaction transactionHistory) {
@@ -108,8 +302,9 @@ class _HomeState extends State<Home> {
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(5),
         child: Image.asset(
-            'images/${transactionHistory.category.categoryImage}',
-            height: 40),
+          'images/${transactionHistory.category.categoryImage}',
+          height: 40,
+        ),
       ),
       title: Text(
         transactionHistory.notes,
@@ -129,196 +324,54 @@ class _HomeState extends State<Home> {
         style: TextStyle(
           fontWeight: FontWeight.w600,
           fontSize: 17,
-          color:
-              transactionHistory.type == 'Expense' ? Colors.red : Colors.green,
+          color: transactionHistory.type == 'Expense' ? Colors.red : Colors.green,
         ),
       ),
     );
   }
 }
 
-Stack _head() {
-  return Stack(
-    children: [
-      Column(
-        children: [
-          Container(
-            width: double.infinity,
-            height: 240,
-            decoration: const BoxDecoration(
-              color: Color(0xFF0D47A1),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
-              ),
-            ),
-            child: Stack(
-              children: [
-                Positioned(
-                    top: 30,
-                    right: 30,
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.settings,
-                        color: Colors.white,
-                      ),
-                    )),
-                const Padding(
-                    padding: EdgeInsets.only(top: 40, left: 30),
-                    child: Text(
-                      "Dashboard",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 22,
-                        color: Colors.white,
-                      ),
-                    ))
-              ],
-            ),
-          ),
-        ],
+class ChatBotScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Watson Assistant Chatbot'),
       ),
-      Center(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 100),
-          child: Container(
-            height: 180,
-            width: 360,
-            decoration: BoxDecoration(
-              boxShadow: const [
-                BoxShadow(
-                  color: Color.fromRGBO(47, 125, 121, 0.3),
-                  offset: Offset(0, 6),
-                  blurRadius: 12,
-                  spreadRadius: 6,
-                ),
-              ],
-              color: const Color(0xFF64B5F6),
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Column(
-              children: [
-                const SizedBox(height: 10),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Total Balance',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Icon(
-                        Icons.more_horiz,
-                        color: Colors.white,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 7),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15),
-                  child: Row(
-                    children: [
-                      Text(
-                        formatCurrency(totalBalance()),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 25,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 25),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 13,
-                            backgroundColor: Colors.green,
-                            child: Icon(
-                              Icons.arrow_upward,
-                              color: Colors.black,
-                              size: 19,
-                            ),
-                          ),
-                          SizedBox(width: 7),
-                          Text(
-                            'Income',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                              color: Color.fromARGB(255, 216, 216, 216),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 13,
-                            backgroundColor: Colors.red,
-                            child: Icon(
-                              Icons.arrow_downward,
-                              color: Colors.black,
-                              size: 19,
-                            ),
-                          ),
-                          SizedBox(width: 7),
-                          Text(
-                            'Expenses',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                              color: Color.fromARGB(255, 216, 216, 216),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        formatCurrency(totalIncome()),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 17,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        formatCurrency(totalExpense()),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 17,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
-      )
-    ],
-  );
+      body: WebView(
+        initialUrl: 'about:blank',
+        javascriptMode: JavascriptMode.unrestricted,
+        onWebViewCreated: (WebViewController webViewController) {
+          _loadHtmlFromAssets(webViewController);
+        },
+      ),
+    );
+  }
+
+  void _loadHtmlFromAssets(WebViewController webViewController) {
+    String htmlContent = '''
+      <html>
+        <head>
+          <script>
+            window.watsonAssistantChatOptions = {
+              integrationID: "ecbcd48b-08fa-4ff1-9116-5276bfe74bf9",
+              region: "us-south",
+              serviceInstanceID: "f08704a3-ca28-4a04-b6c0-d410122b3c62",
+              onLoad: async (instance) => { await instance.render(); }
+            };
+            setTimeout(function(){
+              const t=document.createElement('script');
+              t.src="https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
+              document.head.appendChild(t);
+            });
+          </script>
+        </head>
+        <body></body>
+      </html>
+    ''';
+
+    webViewController.loadUrl(Uri.dataFromString(htmlContent,
+            mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
+        .toString());
+  }
 }

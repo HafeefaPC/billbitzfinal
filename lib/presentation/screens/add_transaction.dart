@@ -1,3 +1,4 @@
+import 'package:billbitzfinal/presentation/screens/payment.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:billbitzfinal/data/utilty.dart';
@@ -56,16 +57,41 @@ void initState() {
       explainC.text = parts[1].trim();   // Assuming notes is the second part
       amountC.text = parts[2].trim();    // Assuming amount is the third part
       
-      // Find the corresponding category item based on parts[0].trim()
-      selectedCategoryItem = categories.firstWhere(
-        (category) => category.title == parts[0].trim(),
-        orElse: () => categories.first, // Default to the first category if no match
-      );
-    } else {
-     // Default to 'Expense' if no type is found
+   String categoryTitle = parts[0].trim();
+      switch (categoryTitle.toLowerCase()) {
+        case 'food':
+          selectedCategoryItem = expenseCategories[0];
+          break;
+        case 'transportation':
+          selectedCategoryItem = expenseCategories[1];
+          break;
+        case 'education':
+          selectedCategoryItem = expenseCategories[2];
+          break;
+        case 'bills':
+          selectedCategoryItem = expenseCategories[3];
+          break;
+        case 'travels':
+          selectedCategoryItem = expenseCategories[4];
+          break;
+        case 'pets':
+          selectedCategoryItem = expenseCategories[5];
+          break;
+        case 'tax':
+          selectedCategoryItem = expenseCategories[6];
+          break;
+    
+        default:
+          selectedCategoryItem = expenseCategories[7];// Handle default case if category is not found
+          break;
+      }
+        
+    
+      
     }
   });
-}
+  }
+
 
 
   Future<void> openBox() async {
@@ -128,6 +154,7 @@ void initState() {
       ]),
     );
   }
+
 
   GestureDetector addTransaction() {
     bool isWarningShown = false;
@@ -445,7 +472,7 @@ void initState() {
     );
   }
 
-  Column backgroundAddContainer(BuildContext context) {
+    Column backgroundAddContainer(BuildContext context) {
     return Column(
       children: [
         Container(
@@ -491,10 +518,40 @@ void initState() {
                       );
                     },
                     child: const Icon(
-                       IconData(0xe4b6, fontFamily: 'MaterialIcons'),
+                      IconData(0xe4b6, fontFamily: 'MaterialIcons'),
                       color: Colors.white,
                     ),
-                  )
+                  ),
+                  // Add Pay button here
+                  GestureDetector(
+                    onTap: () {
+                      // Implement pay functionality
+                      // For example:
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Pay'),
+                          content: const Text('Payment functionality goes here.'),
+                          actions: [
+                            TextButton(
+                              child: const Text('OK'),
+                              onPressed: () {
+                                 Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>Scanner(),
+                            ),
+                          );
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    child: const Icon(
+                      Icons.payment,
+                      color: Colors.white,
+                    ),
+                  ),
                 ],
               ),
             )

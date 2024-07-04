@@ -42,12 +42,7 @@ class CategoryScreenState extends State<CategoryScreen> {
       ...defaultIncomeCategories
     ];
 
-    // categories = [
-    //   CategoryModel( 'Expense', , 'Header'),
-    //   ...expenseCategories,
-    //   CategoryModel( 'Income', 'Header'),
-    //   ...incomeCategories,
-    // ];
+   
     setState(() {});
   }
 
