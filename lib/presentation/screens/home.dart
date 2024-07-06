@@ -1,15 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:hive_flutter/adapters.dart';
-import 'package:billbitzfinal/domain/models/transaction_model.dart';
 import 'package:billbitzfinal/Constants/days.dart';
 import 'package:billbitzfinal/data/utilty.dart';
-import 'dart:convert';
-
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:billbitzfinal/domain/models/transaction_model.dart';
+import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 
 
 class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+  const Home({super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -29,36 +26,28 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: SafeArea(
         child: ValueListenableBuilder(
-          valueListenable: box.listenable(),
-          builder: (context, value, child) {
-            return CustomScrollView(
-              slivers: [
-                SliverToBoxAdapter(
-                  child: SizedBox(height: 340, child: _head(context)),
-                ),
-                 SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Transactions History',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 19,
-                            color: Colors.black,
+            valueListenable: box.listenable(),
+            builder: (context, value, child) {
+              return CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: SizedBox(height: 340, child: _head(context)),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Transactions History',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 19,
+                              color: Colors.black,
+                            ),
                           ),
-                        ),
-                        TextButton(
-
-                          onPressed: () {
-                           Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => ChatBotScreen()),
-                            );
-                          },
-                          child: Text(
+                          Text(
                             'See all',
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
@@ -66,24 +55,18 @@ class _HomeState extends State<Home> {
                               color: Colors.grey,
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      transactionHistory = box.values.toList()[index];
-                      return listTransaction(transactionHistory, index);
-                    },
-                    childCount: box.length,
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
+                  SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                    transactionHistory = box.values.toList()[index];
+                    return listTransaction(transactionHistory, index);
+                  }, childCount: box.length)),
+                ],
+              );
+            }),
       ),
     );
   }
@@ -105,17 +88,17 @@ class _HomeState extends State<Home> {
               ),
               child: Stack(
                 children: [
+                 
                   const Padding(
-                    padding: EdgeInsets.only(top: 40, left: 30),
-                    child: Text(
-                      "Dashboard",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 22,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                      padding: EdgeInsets.only(top: 40, left: 30),
+                      child: Text(
+                        "Dashboard",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 22,
+                          color: Colors.white,
+                        ),
+                      ))
                 ],
               ),
             ),
@@ -267,34 +250,33 @@ class _HomeState extends State<Home> {
 
   Widget listTransaction(Transaction transactionHistory, int index) {
     return Dismissible(
-      key: UniqueKey(),
-      confirmDismiss: (direction) async {
-        return await showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text("Confirm"),
-              content: const Text(
-                  "Are you sure you want to delete this transaction?"),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text("Cancel"),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(true),
-                  child: const Text("Delete"),
-                ),
-              ],
-            );
-          },
-        );
-      },
-      onDismissed: (direction) {
-        transactionHistory.delete();
-      },
-      child: getTransaction(index, transactionHistory),
-    );
+        key: UniqueKey(),
+        confirmDismiss: (direction) async {
+          return await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text("Confirm"),
+                content: const Text(
+                    "Are you sure you want to delete this transaction?"),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: const Text("Cancel"),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: const Text("Delete"),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+        onDismissed: (direction) {
+          transactionHistory.delete();
+        },
+        child: getTransaction(index, transactionHistory));
   }
 
   ListTile getTransaction(int index, Transaction transactionHistory) {
@@ -302,9 +284,8 @@ class _HomeState extends State<Home> {
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(5),
         child: Image.asset(
-          'images/${transactionHistory.category.categoryImage}',
-          height: 40,
-        ),
+            'images/${transactionHistory.category.categoryImage}',
+            height: 40),
       ),
       title: Text(
         transactionHistory.notes,
@@ -324,54 +305,10 @@ class _HomeState extends State<Home> {
         style: TextStyle(
           fontWeight: FontWeight.w600,
           fontSize: 17,
-          color: transactionHistory.type == 'Expense' ? Colors.red : Colors.green,
+          color:
+              transactionHistory.type == 'Expense' ? Colors.red : Colors.green,
         ),
       ),
     );
-  }
-}
-
-class ChatBotScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Watson Assistant Chatbot'),
-      ),
-      body: WebView(
-        initialUrl: 'about:blank',
-        javascriptMode: JavascriptMode.unrestricted,
-        onWebViewCreated: (WebViewController webViewController) {
-          _loadHtmlFromAssets(webViewController);
-        },
-      ),
-    );
-  }
-
-  void _loadHtmlFromAssets(WebViewController webViewController) {
-    String htmlContent = '''
-      <html>
-        <head>
-          <script>
-            window.watsonAssistantChatOptions = {
-              integrationID: "ecbcd48b-08fa-4ff1-9116-5276bfe74bf9",
-              region: "us-south",
-              serviceInstanceID: "f08704a3-ca28-4a04-b6c0-d410122b3c62",
-              onLoad: async (instance) => { await instance.render(); }
-            };
-            setTimeout(function(){
-              const t=document.createElement('script');
-              t.src="https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
-              document.head.appendChild(t);
-            });
-          </script>
-        </head>
-        <body></body>
-      </html>
-    ''';
-
-    webViewController.loadUrl(Uri.dataFromString(htmlContent,
-            mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
-        .toString());
   }
 }

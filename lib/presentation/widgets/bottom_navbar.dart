@@ -4,7 +4,7 @@ import 'package:billbitzfinal/presentation/screens/home.dart';
 import 'package:billbitzfinal/presentation/screens/search_screen.dart';
 import 'package:billbitzfinal/presentation/screens/statistic.dart';
 import 'package:flutter/material.dart';
-import 'package:billbitzfinal/presentation/screens/camera.dart';
+
 
 class Bottom extends StatefulWidget {
   const Bottom({super.key});

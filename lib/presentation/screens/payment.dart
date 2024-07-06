@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'add_transaction.dart';
+
 class Scanner extends StatefulWidget {
   @override
   _ScannerState createState() => _ScannerState();
@@ -77,6 +79,10 @@ class _ScannerState extends State<Scanner> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('No QR code scanned')),
         );
+         Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => AddScreen(extractedText: '',)),
+      );
       }
     } on Exception catch (e) {
       setState(() {
@@ -89,26 +95,27 @@ class _ScannerState extends State<Scanner> {
       );
     }
   }
-
-  void _openUPIUrl(String url) async {
-    if (_isUPIUrl(url)) {
-      if (await canLaunch(url)) {
-        await launch(url);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not launch $url')),
-        );
-      }
+void _openUPIUrl(String url) async {
+  // Check if the URL is a valid UPI URL
+  if (_isUPIUrl(url)) {
+    if (await canLaunch(url)) {
+      await launch(url);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Scanned data is not a valid UPI URL')),
+        SnackBar(content: Text('Could not launch $url')),
       );
     }
+  } else {
+    // Handle case where scanned data is not a valid UPI URL
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Scanned data is not a valid UPI URL')),
+    );
   }
+}
 
-  bool _isUPIUrl(String url) {
-    // Check if the scanned data matches the UPI URL pattern
-    final uri = Uri.tryParse(url);
-    return uri != null && uri.scheme == 'upi';
-  }
+bool _isUPIUrl(String url) {
+  
+  final uri = Uri.tryParse(url);
+  return uri != null && uri.scheme == 'upi';
+}
 }
