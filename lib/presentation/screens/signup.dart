@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'package:hive/hive.dart';
-
+import 'package:lottie/lottie.dart';
 import '../../domain/models/userdata_model.dart';
 import 'login.dart';
 
@@ -23,23 +22,16 @@ class _SignupPageState extends State<SignupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue.shade900,
+     
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
             child: Container(
-              margin: EdgeInsets.all(16.0),
-              padding: EdgeInsets.all(16.0),
+              margin: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: Colors.white,
                 borderRadius: BorderRadius.circular(12.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 10.0,
-                    offset: Offset(0, 4),
-                  ),
-                ],
+               
               ),
               child: Form(
                 key: _formKey,
@@ -47,52 +39,58 @@ class _SignupPageState extends State<SignupPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     
-                   
-                    SizedBox(height: 20),
-                    Text("Sign Up",
-                        style: TextStyle(fontSize: 24, color: Colors.blue)),
-                    SizedBox(height: 20),
+                      Container(
+                width: 250,
+                height: 250,
+                child: Lottie.asset('animation/animation.json'),
+              ),
+                    const SizedBox(height: 0),
+                    const Text(
+                      "Sign Up",
+                      style: TextStyle(fontSize: 30, color: Color(0xFF0D47A1),),
+                    ),
+                    const SizedBox(height: 20),
                     _buildTextField(
                         controller: firstNameController, hintText: 'First Name'),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     _buildTextField(
                         controller: lastNameController, hintText: 'Last Name'),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     _buildTextField(
                         controller: emailController,
                         hintText: 'Email',
                         inputType: TextInputType.emailAddress),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     _buildTextField(
                         controller: passwordController,
                         hintText: 'Password',
                         isPassword: true),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: _signup,
-                      child: Text('Sign Up'),
+                      child: const Text('Sign Up'),
                       style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white, backgroundColor: Colors.blue,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                        foregroundColor: Colors.white,
+                        backgroundColor:  Color(0xFF0D47A1),
+                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     GestureDetector(
                       onTap: () {
                         Navigator.pushReplacement(context,
                             MaterialPageRoute(builder: (context) => LoginPage()));
                       },
                       child: RichText(
-                        text: TextSpan(
+                        text: const TextSpan(
                           text: 'Already have an account?',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle( color: Color(0xFF0D47A1),),
                           children: <TextSpan>[
                             TextSpan(
                               text: ' Login Now',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.blue),
+                                color: Color(0xFF0D47A1)),
                             ),
                           ],
                         ),
@@ -108,11 +106,12 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
-  Widget _buildTextField(
-      {required TextEditingController controller,
-      required String hintText,
-      bool isPassword = false,
-      TextInputType inputType = TextInputType.text}) {
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String hintText,
+    bool isPassword = false,
+    TextInputType inputType = TextInputType.text,
+  }) {
     return TextFormField(
       controller: controller,
       obscureText: isPassword,
@@ -124,6 +123,7 @@ class _SignupPageState extends State<SignupPage> {
         ),
         filled: true,
         fillColor: Colors.lightBlue[50],
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -141,10 +141,10 @@ class _SignupPageState extends State<SignupPage> {
     if (_formKey.currentState!.validate()) {
       final userBox = Hive.box<UserModel>('users');
       String email = emailController.text.trim();
-      
+
       if (userBox.values.any((user) => user.email == email)) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('User already exists')),
+          const SnackBar(content: Text('User already exists')),
         );
         return;
       }
@@ -159,7 +159,7 @@ class _SignupPageState extends State<SignupPage> {
       await userBox.add(newUser);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Sign up successful')),
+        const SnackBar(content: Text('Sign up successful')),
       );
 
       Navigator.pushReplacement(

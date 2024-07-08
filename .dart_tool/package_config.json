@@ -380,6 +380,12 @@
       "languageVersion": "2.19"
     },
     {
+      "name": "lottie",
+      "rootUri": "file:///C:/Users/hafee/AppData/Local/Pub/Cache/hosted/pub.dev/lottie-3.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
       "name": "matcher",
       "rootUri": "file:///C:/Users/hafee/AppData/Local/Pub/Cache/hosted/pub.dev/matcher-0.12.16+1",
       "packageUri": "lib/",
@@ -812,7 +818,7 @@
       "languageVersion": "3.4"
     }
   ],
-  "generated": "2024-07-05T08:06:32.603056Z",
+  "generated": "2024-07-08T19:07:00.272449Z",
   "generator": "pub",
   "generatorVersion": "3.4.3",
   "flutterRoot": "file:///C:/Users/hafee/flutter_windows_3.19.0-stable/flutter",
