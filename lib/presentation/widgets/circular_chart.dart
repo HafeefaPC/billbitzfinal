@@ -138,7 +138,7 @@ class _CircularChartState extends State<CircularChart> {
                       '${NumberFormat.compactCurrency(
                         symbol: '',
                         decimalDigits: 1,
-                      ).format(data.y / 1000000)}M',
+                      ).format(data.y / 1000)}Rs',
                   animationDuration: 1000,
                   dataLabelSettings: const DataLabelSettings(
                       showZeroValue: true,

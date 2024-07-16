@@ -464,6 +464,12 @@
       "languageVersion": "2.19"
     },
     {
+      "name": "pedantic",
+      "rootUri": "file:///C:/Users/hafee/AppData/Local/Pub/Cache/hosted/pub.dev/pedantic-1.11.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "permission_handler",
       "rootUri": "file:///C:/Users/hafee/AppData/Local/Pub/Cache/hosted/pub.dev/permission_handler-11.3.1",
       "packageUri": "lib/",
@@ -582,6 +588,24 @@
       "rootUri": "file:///C:/Users/hafee/AppData/Local/Pub/Cache/hosted/pub.dev/source_span-1.10.0",
       "packageUri": "lib/",
       "languageVersion": "2.18"
+    },
+    {
+      "name": "speech_to_text",
+      "rootUri": "file:///C:/Users/hafee/AppData/Local/Pub/Cache/hosted/pub.dev/speech_to_text-6.6.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "speech_to_text_macos",
+      "rootUri": "file:///C:/Users/hafee/AppData/Local/Pub/Cache/hosted/pub.dev/speech_to_text_macos-1.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "speech_to_text_platform_interface",
+      "rootUri": "file:///C:/Users/hafee/AppData/Local/Pub/Cache/hosted/pub.dev/speech_to_text_platform_interface-2.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
     },
     {
       "name": "stack_trace",
@@ -818,7 +842,7 @@
       "languageVersion": "3.4"
     }
   ],
-  "generated": "2024-07-08T19:07:00.272449Z",
+  "generated": "2024-07-16T19:35:07.902553Z",
   "generator": "pub",
   "generatorVersion": "3.4.3",
   "flutterRoot": "file:///C:/Users/hafee/flutter_windows_3.19.0-stable/flutter",

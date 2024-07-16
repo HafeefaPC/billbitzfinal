@@ -48,7 +48,7 @@ class _CameraScreenState extends State<CameraScreen> {
     _controller.dispose();
     super.dispose();
   }
-
+ //image capture
   Future<void> _captureAndProcessImage(BuildContext context) async {
     try {
       await _initializeControllerFuture;
@@ -82,7 +82,7 @@ class _CameraScreenState extends State<CameraScreen> {
     final model = GenerativeModel(model: 'gemini-pro-vision', apiKey: apiKey);
 
     final prompt = TextPart(
-      "Extract the category of expense from these food,Transportation,Education,Bills,Travels,Pets,Others Expense,Tax and  a one-word that describtion for the expense, and the total amount of expense. For example output should be coma separated like  food, dinner, 100."
+      "Extract the category of expense from these Food,Transportation,Education,Bills,Travels,Pets,Others Expense,Tax and  a one-word that describtion for the expense, and the total amount of expense. For example output should be coma separated like   [Bills, electricity,2480]"
     );
 
     final imagePart = DataPart('image/jpeg', imageBytes);

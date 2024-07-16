@@ -1,11 +1,15 @@
 import 'package:billbitzfinal/presentation/screens/payment.dart';
+
 import 'package:flutter/material.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:hive/hive.dart';
 import 'package:billbitzfinal/data/utilty.dart';
 import 'package:billbitzfinal/domain/models/category_model.dart';
 import 'package:billbitzfinal/domain/models/transaction_model.dart';
 import 'package:billbitzfinal/Constants/default_categories.dart';
 import 'package:billbitzfinal/Constants/limits.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 import 'camera.dart'; // Update the import if the location of your CameraScreen has changed
 
 class AddScreen extends StatefulWidget {
@@ -36,63 +40,173 @@ class _AddScreenState extends State<AddScreen> {
   FocusNode amountFocus = FocusNode();
 
   bool isAmountValid = true;
+  final SpeechToText _speechToText = SpeechToText();
+  bool _speechEnabled = false;
+  String _wordSpoken = '';
+  double _confidenceLevel = 0.0;
 
-@override
-void initState() {
-  super.initState();
-  explainFocus.addListener(() {
-    setState(() {});
-  });
-  amountFocus.addListener(() {
-    setState(() {});
-  });
+  @override
+  void initState() {
+    super.initState();
+    explainFocus.addListener(() {
+      setState(() {});
+    });
+    amountFocus.addListener(() {
+      setState(() {});
+    });
+    openBox().then((_) {
+      fetchCategories();
 
-  openBox().then((_) {
-    fetchCategories();
+      List<String> parts = widget.extractedText.split(',');
 
-    List<String> parts = widget.extractedText.split(',');
-    
-    if (parts.length >= 3) {
-      selectedTypeItem = 'Expense'; // Assuming type is 'Expense'
-      explainC.text = parts[1].trim();   // Assuming notes is the second part
-      amountC.text = parts[2].trim();    // Assuming amount is the third part
-      
-   String categoryTitle = parts[0].trim();
-      switch (categoryTitle.toLowerCase()) {
-        case 'food':
-          selectedCategoryItem = expenseCategories[0];
-          break;
-        case 'transportation':
-          selectedCategoryItem = expenseCategories[1];
-          break;
-        case 'education':
-          selectedCategoryItem = expenseCategories[2];
-          break;
-        case 'bills':
-          selectedCategoryItem = expenseCategories[3];
-          break;
-        case 'travels':
-          selectedCategoryItem = expenseCategories[4];
-          break;
-        case 'pets':
-          selectedCategoryItem = expenseCategories[5];
-          break;
-        case 'tax':
-          selectedCategoryItem = expenseCategories[6];
-          break;
-    
-        default:
-          selectedCategoryItem = expenseCategories[7];// Handle default case if category is not found
-          break;
+      if (parts.length >= 3) {
+        selectedTypeItem = 'Expense'; // Assuming type is 'Expense'
+        explainC.text = parts[1].trim(); // Assuming notes is the second part
+       String amountText = parts[2].trim();
+    if (amountText.isNotEmpty) {
+      amountText = amountText.substring(0, amountText.length - 1);
       }
-        
-    
-      
-    }
-  });
+
+amountC.text = amountText;// Assuming amount is the third part
+
+     String categoryTitle = parts[0].trim();
+
+  categoryTitle = categoryTitle.substring(1, categoryTitle.length );
+ print('Category Title: $categoryTitle');
+
+categoryTitle = categoryTitle.toLowerCase();
+
+switch (categoryTitle) {
+  case 'food':
+    selectedCategoryItem = expenseCategories[0];
+    break;
+  case 'transportation':
+    selectedCategoryItem = expenseCategories[1];
+    break;
+  case 'education':
+    selectedCategoryItem = expenseCategories[2];
+    break;
+  case 'bills':
+    selectedCategoryItem = expenseCategories[3];
+    break;
+  case 'travels':
+    selectedCategoryItem = expenseCategories[4];
+    break;
+  case 'pets':
+    selectedCategoryItem = expenseCategories[5];
+    break;
+  case 'tax':
+    selectedCategoryItem = expenseCategories[6];
+    break;
+  default:
+    selectedCategoryItem = expenseCategories[7]; // Default category if not found
+    break;
+}
+      }
+    });
+
+    initSpeech();
   }
 
+  Future<void> initSpeech() async {
+    try {
+      _speechEnabled = await _speechToText.initialize(
+        onStatus: (status) => print('onStatus: $status'),
+        onError: (errorNotification) => print('onError: $errorNotification'),
+      );
+    } catch (e) {
+      print("Error initializing SpeechToText: $e");
+    }
+    setState(() {});
+  }
 
+  Future<void> _startListening() async {
+    if (_speechEnabled) {
+      try {
+        await _speechToText.listen(onResult: _onSpeechResult);
+        setState(() {
+          _confidenceLevel = 0.0;
+        });
+      } catch (e) {
+        print("Error starting to listen: $e");
+      }
+    }
+  }
+
+  Future<void> _stopListening() async {
+    try {
+      await _speechToText.stop();
+      if (_wordSpoken.isNotEmpty) {
+        await _processSpokenText(_wordSpoken);
+      }
+    } catch (e) {
+      print("Error stopping listening: $e");
+    }
+    setState(() {});
+  }
+
+  void _onSpeechResult(SpeechRecognitionResult result) {
+    setState(() {
+      _wordSpoken = result.recognizedWords;
+      print('Word Spoken: $_wordSpoken');
+      _confidenceLevel = result.confidence;
+    });
+  }
+
+  Future<void> _processSpokenText(String text) async {
+    try {
+      final String apiKey =
+          'AIzaSyDHmh4P92aN9GGSug0cwwZrp2WnfWJ3RzM'; // Replace with your actual API key
+      final model = GenerativeModel(
+          model: 'models/gemini-1.5-pro-latest', apiKey: apiKey);
+
+      final prompt = TextPart(
+          "Provide output as a three-word array with comma separation containing category, a small note, and amount of rupees . Use these select the from thse categories: Food, Transportation, Education, Bills, Travels, Pets, Tax, Others Expense. Format: [category, note, amount]. For example, [food, dinner, 100].");
+
+      final textPart = TextPart(text);
+
+      final response = await model.generateContent([
+        Content.multi([prompt, textPart])
+      ]);
+
+      // Assuming the response is a single text string
+      final extractedText = response.text;
+
+      // Extract the array from the response
+      final startIndex = extractedText?.indexOf('[');
+      final endIndex = extractedText!.indexOf(']') + 1;
+
+      if (startIndex != -1 && endIndex != -1) {
+        final arrayString = extractedText.substring(startIndex!, endIndex);
+        final extractedData = arrayString
+            .replaceAll('[', '')
+            .replaceAll(']', '')
+            .split(',')
+            .map((e) => e.trim())
+            .toList();
+
+        // Print the extracted data
+        print('Extracted Data: $extractedData');
+
+        // Update the UI with the extracted data
+        setState(() {
+          _wordSpoken = extractedData.join(', ');
+        });
+
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => AddScreen(
+              extractedText: extractedText,
+            ),
+          ),
+        );
+      } else {
+        print('Error: Unable to extract data');
+      }
+    } catch (e) {
+      print('Error processing spoken text: $e');
+    }
+  }
 
   Future<void> openBox() async {
     box = await Hive.openBox<CategoryModel>('categories');
@@ -154,7 +268,6 @@ void initState() {
       ]),
     );
   }
-
 
   GestureDetector addTransaction() {
     bool isWarningShown = false;
@@ -472,7 +585,7 @@ void initState() {
     );
   }
 
-    Column backgroundAddContainer(BuildContext context) {
+  Column backgroundAddContainer(BuildContext context) {
     return Column(
       children: [
         Container(
@@ -522,6 +635,20 @@ void initState() {
                       color: Colors.white,
                     ),
                   ),
+                 GestureDetector(
+  onTap: () {
+    if (_speechToText.isListening) {
+      _stopListening(); // Call stop method if already listening
+    } else {
+      _startListening(); // Call start method if not listening
+    }
+  },
+  child: Icon(
+    _speechToText.isListening ? Icons.stop : Icons.mic,
+    color: _speechToText.isListening ? Colors.red : Colors.white,
+  ),
+),
+
                   // Add Pay button here
                   GestureDetector(
                     onTap: () {
@@ -531,16 +658,17 @@ void initState() {
                         context: context,
                         builder: (context) => AlertDialog(
                           title: const Text('Pay'),
-                          content: const Text('Payment functionality goes here.'),
+                          content:
+                              const Text('Payment functionality goes here.'),
                           actions: [
                             TextButton(
                               child: const Text('OK'),
                               onPressed: () {
-                                 Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) =>Scanner(),
-                            ),
-                          );
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => Scanner(),
+                                  ),
+                                );
                               },
                             ),
                           ],
